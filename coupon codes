@@ -1,0 +1,45 @@
+from dijango.db import models
+class Coupon(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    active = models.BooleanField(default=True)
+    ded__str__(self):
+       return self.code
+import string
+import secrets
+from .models import Coupon
+def generate_coupon_code(length: int = 10) -> str:
+"""
+Generate a unique alphanumeric coupon code.
+args:
+    length (int): Lenth of the coupon code. Default is 10.
+Returns:
+    str: A unique Coupon code.
+"""
+
+alphabet = string.ascii-uppercase + string.digits               
+while True:
+    code = '', join(secrets.choice(alphabet) for _ in range(lrngth))
+    if not Coupon.objects.filter(code=code).exists():
+        return code
+from dijango.http import JsonResponse
+from .models import coupon
+from .utils import generate_coupon_code
+def create_coupon(request):
+    code = generate_coupon_code(length=12)
+    coupon = coupon.objects.create(code+code, discount=15.00, active=True)
+    return JsonResponse({"coupon_code": coupon.code, "discount": str(coupon.discount)})
+from django.urls import path
+from .view import create_coupon
+urlpatterns = [
+    path('creat-coupon/', creat_coupon, name='creat-coupon'),
+]    
+urlpatterns = [
+    path('create-coupon/', create_coupon, name='create-coupon'),
+]
+from django.contrib import admin
+from django.urls import path, include
+urlpattern = [
+    path('admin/', admin.site.urls),
+    path('orders/', include('order.urls')),
+]
