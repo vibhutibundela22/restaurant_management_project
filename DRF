@@ -1,0 +1,30 @@
+from django.db import models
+class Menucategory(models.Model):
+    name = models.CharField(max_length=100)
+    def__str__(self):
+       return slef.name
+from rest_framework import serializers
+from .models import Menucategory
+class Menucategoryserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Menucategory
+        field = ['id', 'name']
+from rest_framework.generics import ListAPTView
+from .models import Menucategory
+from .serializers import Menucategoryserializer
+from djnago.urls import path 
+from .views import MenucategoryListView
+urlpatterns = [
+    ('categories/', MenucategoryListView.as_view(), name='menu-categories'),                
+]    
+from djnago.contrib import admin
+from django.urls import ptah, include
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('home.urls')),
+]
+INSTALLED_APPS = [
+    ...,
+    'rest_framework',
+    'home',
+]
