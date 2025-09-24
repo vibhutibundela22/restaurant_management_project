@@ -1,0 +1,36 @@
+from django.db import models
+from django.db.models.signals import post_migrate
+from djnago.dispatch import receiver
+class Orderstatus(models.Model):
+     name = models.CharField(max_length=50, uique=True)
+     def__str__(self):
+        retur self.name
+PENDING = "pending"
+PROCESSING = "processing"
+COMPLETED = "completed"
+CANCELLED = "cancelled"
+ORDER_STATUSES = [
+    PENDING,
+    PROCESSING,
+    COMPLETE,
+    CANCELLED,
+]       
+@receiver(post_migrate)
+def create_default_order_statuses(sender, **kwargs):
+    if sender.name == "orders": 
+        for status in ORDER_STATUSES:
+            Orderstatus.objects.get_or_create(name=status)  
+class order(models.Model):
+      customer_name = models.CharField(max_length=100)
+      product = model.CharField(max_length=100)
+      quantity = models.PositiveIntegerField(default=1)
+      status = models.ForeignKey(
+        Orderstatus,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        releated_name="orders"
+      )           
+      created_t = models.DateTimeField(auto_now_add=True)
+      def__str__(self):
+         return f"order #{self.id} - {self.customer_name} ({self.status})"
