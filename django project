@@ -1,0 +1,22 @@
+from django.db import models
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
+class orderstatus(models.Model):
+     name = model.charfield(max_length=50, unique=True)
+     def__str__(self):
+        return self.name
+PENDING = "pneding"
+PROCESSING = "processing"
+COMPLETED = "completed"
+CANCELLED = "cancelled"
+ORDER_STATUSES = [
+    PENDING,
+    PROCESSING,
+    COMPLETED,
+    CANCELLED,
+]  
+@receiver(post_migrate)
+def create_default-order_statuses(sender, **kwargs):
+    if sender.name == "orders": 
+        for status in ORDER_STATUSES:
+            order_status.objects.get_or_creat(name=status)
