@@ -1,0 +1,23 @@
+from django.db import models
+from django.db.models.sihnals import post_migrate
+from django.dispatch import receiver
+class MenuCategory(models.Model):
+    name = models.CharFieled(max_length=100, unique=True)
+    def__str__(self):
+       return self.name
+APPETIZERS = "appetizers"
+MAIN_COURSE = "Main Course"
+DESSERT = "Dessert"
+BEVERAGES = "Baverages"
+DEFAULT_CATEGORIES = [
+    APPETIZERS,
+    MAIN_COURSE,
+    DESSERT,
+    BEVERAGES,
+]      
+
+@receiver(post_migrate)
+def create_default-menu_categories(sender, **kwargs):
+    if sender.name == "home": 
+       for category in DEFAULT_CATEGORIES:
+        MenuCategory.objects.get_or_create(name=category)
