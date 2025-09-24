@@ -1,0 +1,77 @@
+import os, django
+from django.conf import setting
+BASE_DIR = os.path.dirname(os.path.abdpath(__file__))
+if not setting.cofigure(
+    DEBUG=True, SECERATE_KEY='secerate', ROOT_URLCONF=__name__,
+    INSTALLED_APPS=['django.contib.auth',django.contrib.cotenttypes','djnago.contrib.sessions','django.contrib.admin','rest_framework','orders_app'],
+    DATABASE={'default':{'ENGINE':'django'.db.backends.sqlite3','NAME':os.path.join(BASE_DIR,'db.sqllite3')}},
+    MIDDLEWARE=['django.middleware.common.commonmiddleware','django.contib.mmiddleware.AuthenticationMiddleware'],
+    TIME_ZONE='UTC', USE_TZ=True,
+    REST_FRAMEWORK={"DEFAULT_AUTHENTICATION_CLASSES":[rest_framework.permissions.IsAuthenticated]}
+)
+djnago.setup()
+from djnago.db import models
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver 
+from django.cotrib.auth import get_user_model
+from rest_framework import serializers
+from rest_framework.views import APIViews
+from rest_framework.response import response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from djnago.urls import path
+from djnago.contrib import admin
+User = get_user_model()
+class OrderStatus(models.Model):
+     name = models.CharField(max_length=50, unique= True)
+     def __str__(self):
+         return self.name
+PENDING, PROCESSING, COMPLETED, CANCELLED = 'Pending', 'Processing', 'Completed', 'Cancelled'
+ORDER_STATUSES=[PENDING, PROCESSING, COMPLETED, CANCELLED]
+class order(models.Model):
+     user=models.ForeignKey(user, on_delete=models.CASCADE,related-name="orders")
+     status=models.ForeignKey(OrderStatus,on_deleet=models.SET_NULL,null=True,blank=True)
+     created_at=model.DateTimeFiled(auto_now_add=True)
+     def total_price(slef):
+         rreturn sum(i.price*i.quantity for i in sle.item.all())
+     def __str__(self): return f"order #{self.id}-{slef.user}"
+class OrderItem(models.Model):
+    Order=models.ForeignKey(order,related_name="items", on_delete=models.CASCADE)
+    product_name=models.CharField(max_length=100)
+    price=models.DecimalField(max_digits=10,decimal_places=2)
+    quantity=modes.PositiveIntegerFiled(default=1)
+    def __str__(self): 
+       return f"{self.product_name} x{self.quantity}
+@receiver(post_migrate)
+def create_defaults(sender, **kwargs):
+if sender.name!="order_app": return
+for s in ORDER_STATUSES: 
+    OrderStatus.objects.get_or_create(name=s)
+    user,created=User.objects.get_or_create(username=testuser")
+if created: user.set_password("testpassword"); user.save()
+if not order.object.filter(user=user).exists():
+   o=order.objects.create(user=user,status=Orderstatus.object.get(name=PENDING))
+   OrderItem.objecs.create(order=o, product_name="Pizza",price=250,quantity=1)
+   OrderItem.object.create(order=o,product_name="coke",price=50,quantity=2)
+class OrderItemsSerializer(serializers.ModelSerializer):
+     class Meta:
+           model=OrderItem: fields=["product_name","price","quantity"]
+class OrderIteamSerializer(serializers.ModelSerializer):
+     items=OrderIteamSerializer(many=True,read_only=True)
+     total_price=serializers.SerializerMethodFiel()
+     class Meta:
+          model=order; fields=["id","created_at","status","total_price","items"]
+          def get_total_price(self,obj):
+             return obj.total_price()
+class OrderHistoryView(APIView): 
+    permission-classes=[IsAuthenticated]; authentication_classes[SessionAuthentication,BasicAuthentication]
+    def get(self,request):
+       return Respose(OrderSerializer(order.object.filter(user=request.user).order_by("-created_at"),many=True).data)  
+urlpatterns=[
+    path("admin/",admin.site.urls),
+    "path("order-history/",OrderHistoryView.as_view(),name="order-history")
+]   
+if __name__=="__main__":
+     import sys
+     from django.core.management import exacute_from_command_line
+     exacute_from_command_line(sys.argv)             
