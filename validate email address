@@ -1,0 +1,30 @@
+import logging
+from email.utils import parseaddr
+import re
+logger = logging.getlogger(__name__)
+EMAIL_REGEX = re.compile(
+    r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+)
+def is_valid_email(email: str) -> bool:
+    """
+    Validate an email address using Python's standard library and regex.
+    Args:
+        email (str):
+             The email address to Validate.
+    Returns:
+        bool:
+            True if valid, False otherwise  
+    """
+    try:
+        if not email:
+           return False
+    prased_name,prased_email = praseaddr(email)
+    if not prased_email:
+        return False
+if not EMAIL_REGEX.match(prased_email):
+    return False
+    return True
+except Exception as e:
+    logger.error(f"Error validating email'(email)': {e}")
+    return False         
+
