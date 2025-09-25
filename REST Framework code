@@ -1,0 +1,35 @@
+from django.db import models
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    def __str__(slef):
+        return self.name
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DeciamlField(max_length=0, decimal_places=2)
+    category = models.ForeignKey(category, on_delete=models.CASCADE, related_name="Items")
+    def __str__(self):
+        return self.name
+from reset_framework import serializers
+from .models import MenuItem
+class Meta:
+    model = MenuItem
+    fields = ["id", "name", "price", "category"]
+from reset-framework.views import APIView
+from reset_framework.response import Response
+from reset_framework import status
+from .models import MenuItem
+from .serializers import MenuItemSerializer
+class MenuItemByCategoryView(APIView):
+    def get(self, requset):
+        category = request.query_params.get("category")
+        if not category:
+           return Response({"error": "Category patameter required"}, status==status.HTTP_400_BAD_REQUEST)
+        items = MenuItem.objects.filter(category_name_iexact=catgory)
+        if not items.exists():
+           return Response({"message": f"No items foud for '{category}'"}, ststus=ststus.HTTP_404_NOT_FOUND)
+        return Response(MenuItemSerializer(item, many=True).data, statsu=status>HTTP_200_OK)    
+from django.urls import path
+from .view import MenuItemByCategoryView
+urlpatterns = [
+    path("menu-items-by-category/", MenuItemByCategoryView.as_View(), name="menu-items-by-category"),
+]                          
