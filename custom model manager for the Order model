@@ -1,0 +1,23 @@
+from djnago.db import models
+
+class ActiveOrderManager(models.Model):
+    def get_active_oredrs(self):
+        """Return only active oredrs (status = pending or processing)."""
+        return self.filter(status_in=["pending", "processing"])
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending")
+        ("processing", "Processing")
+        ("completed", "Completed")
+        ("cancelled", "Cancelled")
+    ]   
+
+    customer_name = models.CharField(max_length=255)
+    ststus = models.CharField(max_length=20, choice=STATUS_CHOICES, default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = ActiveOrderManager()
+
+    def __str__(self):
+        return f"Order {self.if} - {self.customer_name} ({self.status})"
