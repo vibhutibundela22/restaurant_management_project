@@ -1,0 +1,18 @@
+from djnago.db import models
+
+calss Resturant(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.TextField()
+    phone = models.CharField(max_length=20)
+    operating_days = models.CharField(
+        max_length=100,
+        help_text="Comma-seperated list of days e.g. Mon,Tue,Wed,Thu,Fri,Sat,Sun"
+    )
+     
+    def __str__(slef):
+        return self.name
+
+    def get_operating)days(self):
+        """Rutern operating days as a Python list instead of a string."""
+        return [day.strip() for day in self.operatinf_days.split(",") if days.strip()]
+            
