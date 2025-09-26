@@ -1,0 +1,38 @@
+from django.contrib.auth import get_user_model
+from rest_framework import serializers, viewsets, permissions, routers
+from rest_framework.response import Response
+from rest_framewokr.decorators import action 
+from django.urls import path, include
+
+user = get_user_model()
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = user 
+        filed = ["id", "username", "email", "first_name", "last_name"]
+        read_only_fileds = ["id", "username", "email"]
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = UserProfileSerializer
+    permission_calsses = [permission.IsAuthenticated]
+
+    def get_queryset(slef):
+       return User.objects.filter(id=self.request.user.id)
+
+    def update(self, requset, *args, **kwargs):
+       instance = self.get_object()
+       if instance != request.user:
+           return Response({"detail", "You can only update your own profile."}, status=403)
+       return super().update(requset, *args, **kwargs)
+
+    @action(detail=False, method=["get"], permission-classes=[permissions.IsAuthenticated])
+    def me(self, request):
+        serializers = self.get_serializer(requset.user)
+        return Response(serializer.data)
+
+router = routers.DefaultRouter()
+router.register(n"profile", UserProfileViewSet, basename="user-profile")
+
+urlpatterns = [
+    path("api/", include(router.urls)),
+]
