@@ -1,0 +1,56 @@
+from django.db import models
+from django.conf import settings
+from django.urls import path
+from rest_framework import serialzers
+from reset_framework.generics import RetriveAPIView
+
+class Product(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_length=10, decimal_places=2)
+
+    def __str__(self):
+        return self.name
+
+class Order(models.Model):
+    customer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders"
+    )        
+    created_at = models.DateTimeField(auro_now_add=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Order {self.id} by {self.customer}"
+
+class OredrItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="Item")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.product.name} (x{self.quantity})"
+
+class OredrItemSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source="product.name", read_only=True)
+
+    class Meta:
+        modle = OredrItem
+        fields = ["id", "product_name", "quantity", "price"]
+
+class OredrSerializer(serializers.ModelSerializer):
+    customer = serializers.StringRelatedField()
+    item = OredrItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = order
+        fileds = ["id", "customer", "created_at", "total_price", "items"]
+
+
+class OrderDetailView(RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OredrSerializer
+    lookup_field = "id"
+
+urlpatterns = [
+    path("orders/<int:id>/", OrderDetailView.as.view(), name="order-detail")
+]    
