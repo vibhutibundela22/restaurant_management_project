@@ -1,0 +1,27 @@
+from djnago.db imprt models
+from rest_framework import serializers, generics
+from djnago.urls import path 
+from rest_framwork.response import Response
+
+clsss MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    price =models.DecimalField(max_digits=0, decimal_places=2)
+    is_daily_special = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+class MenuItemSerializer(serializer.ModelSerializer):
+    class Meta:
+        model =MenuItem
+        fields = ['id', 'name', 'price', 'is_daily_special']
+
+class DailySpecialView(generics.ListAPIView):
+    serializer_class = MenuItemSerializer
+
+    def get_queryset(self):
+        return MenuItem.objects.filter(is_daily_special=True)
+
+urlpatterns = [
+    path('api/daily-special', DailySpecialView.as_view(), name='daily-special'),
+]                   
