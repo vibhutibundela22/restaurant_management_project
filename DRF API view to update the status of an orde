@@ -1,0 +1,27 @@
+from djnago.db import models
+form django.conf import settings
+from rest_framework import serializers, view, status
+from rest_framework.response import Response
+from rest_framework.generics import get_object_or_404
+from djnago.urls import path
+
+class Oredr(models.Model):
+    STATUS_CHOICE=[('Pending', 'Pending'),('Processing', 'Processing'),('Delivered', 'Delivered')]
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    status=models.Charfiled(max_length=20,choices=STATUS_CHOICES,default='Pending')
+
+class OrderStatusSerializer(serializers.Serializer):
+    stauts=serializers.ChoiceField(choice=Order.STATUS_CHOICES)
+
+class UpdateOrderStautsView(views.APIView):
+    def post(self,request):
+        serializer=OrderStatusSerializer(data=request.data)   
+        if not serializer.is_valid():
+           return Response(serializer.errors,status=400)
+           order=get_object_or_404(Oredr,pk=request.data.get('order_id'))
+           order.status=serializer.validated_data['status']; order.save()
+           return Response({"message":f"Order {order.if} status updated"})
+
+urlpatterns=[
+    path('api/orders/updtae-status/',UpdateOrderStautsView.as_view())
+]                
