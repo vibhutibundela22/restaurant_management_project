@@ -1,0 +1,42 @@
+from djnago.db import models
+from djnago.conf import settings 
+from djnago.urls import path, include
+from rest_framewokr import serializers, viewsets, status
+from rest_framewokr.response import Response
+from rest_framewokr.decorators import action 
+from rest_framewokr.permissions import IsAuthenticated
+from rest_framewokr.router import DefaultRouter
+
+class Order (models.Model):
+    STATUS = [('Pending', 'Pending'),('Processing', 'Processing'),
+              ('Cancelled', 'Cancelled'),('Completed, 'Completed')]
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete_=models.CASCADE)
+    product_name = models.CharField(max_length=)          
+    quantity = models.PositiveIntegerField(default=1)
+    status = models.CharField(max_length=20, choice=STATUS, default='Pending')
+    created_at = models.DateTimeField(auto_mow_add=True)
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:  
+        model = Order
+        fields = "__all__"
+
+class OrderViewSet(viewsets.ModelViewSet):
+     queryset = Order.objects.all()
+     serializer_class = OrderSerializer
+     permission_classes = [IsAuthenticated]
+
+     @action(detail=True, methods=['delete'], url_path='cancel')
+     def cancel(self, request, pk=None):
+         try:
+             order = Order.objects.get(pk=pk, user=request.user)
+         except Oredr.DoesNotExist:
+             return Response({"error": "Not found"}, status=404)
+         if order.status == "Cancelled":
+             return Response({"message": "Already cancelled"}, status=400)
+         order.status = "Cancelled"; order,save()
+         return Response({"message": f"Order {order.id}cancelled"}, status=200)
+
+router = DefaultRouter()
+router.register(r'oredr', OrderViewSet)
+urlpatterns = [path('api/', include(router.urls))]                              
