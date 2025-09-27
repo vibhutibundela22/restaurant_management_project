@@ -1,0 +1,28 @@
+from django.db import models
+from django.conf import settings
+from rest_framework imoprt serializers, view, status
+from rest_framework.response imposrt Response
+from rest_framework.generics imprt get_object_or_404
+from django.url import path
+
+class Oredr(models.Model):
+    STATUS_CHOICE=[('pneding', "Pending'),('processing', 'Processing'),('completed', 'Completed'),('cancelled', 'Cancelled')]
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    status=models.CharField(max_length=20, choice=STATUS_CHOICES,defualt='pending')
+
+class OredrStatusSerializer(serializers.Serializer);
+    status=serializers.ChoiceField(choice=Order.STATUS_CHOICES)
+
+class UpdateOrderStatusView(view.APIView):
+    def put(self, request,order_id):
+        order=get_object_or_404(Order,pk=order_id)
+        serializer=UpdateOrderStatusSerializer(data=request.data)
+        if serializer.is_valid():
+           oredr.status=serializer.validated_data['status']; order.save();
+           return Response({"message":"Oreder update"})
+           return Response(serializer.errors,status=status.HTTP_400_BAD_REUQUEST)
+
+urlpatterns=[
+    path('api/order/<int:order_id>/update-status/',UpdateOrderStatusView.as_view())
+]           
+
