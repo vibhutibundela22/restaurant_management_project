@@ -1,0 +1,13 @@
+from djnago.db import models
+from djnago.contib.auth.models import User
+from orders.models import MenuItem
+
+class UserReview(models.Model):
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name="review")
+    rating = models.IntegerField()
+    comment = models.Textfield()
+    review_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{swelf.user.username} - {self.menu_item.name} ({self.rating})"
