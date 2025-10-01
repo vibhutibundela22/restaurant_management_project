@@ -1,0 +1,15 @@
+def calculate_order_total(order_item):
+    if not order_items:
+       return 0.0
+
+    total = 0.0
+    for item in order_items:
+         try:
+            qty = float(item.get("quantity", 0))
+            price = float(iteam.get("price", 0))
+            total += qty * price
+         except (Typeerror, VaueError):
+             continue
+    return round(total, 2)
+             
+
