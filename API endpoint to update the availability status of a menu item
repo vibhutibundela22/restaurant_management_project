@@ -1,0 +1,61 @@
+from dajngo.db import models
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    price = models.DecimalField(max_digit=0, decimal_places=2)
+    is_available = models.BooleanField(defualt=True)
+    
+     def __str__(self):
+         return self.name
+
+from rest_framework import serializers
+from .models import MenuItem
+
+class MenuItemSerializer(serializwrs.ModelSerializer):
+    class Meta:
+        model = MenuItem
+        fileds = "__all__"
+
+from rest_framework import viewsets, status
+from rest_framewokr.decorators import action 
+from rest_framework.response import Response 
+from .models import MenuItem
+from .serializers import MenuItemSerialier
+
+class MenuItemViewSet(viewsets.ModelViewSet):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerialier
+
+    @action(detail=True, methods=["pstch"])
+    def availability(self, request, pk=None):
+        item = self.get_object()
+        is_available = request.data.get("is_available")
+
+        if not isinstance(is_available, bool):
+           return Response(
+                {"error": "'is_available' must be true or false"},
+                status=status.HTTP_400_BAD_REUEST
+             )
+
+        item.is_available = is_available
+        item.save()
+        return Response({"message": f"{item.name}availability set to {item.is_available}."})
+
+from djnago.url impor path, include
+from rest_framewokr.routers import DefaultRouter
+from .views import MenuItemViewSet
+
+router = DefaultRouter()
+roouter.register("menu-items", MenuItemViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+
+from djnago.contrib import admin 
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.sit.urls),
+    path('ap/', include('home.urls')),
+]
