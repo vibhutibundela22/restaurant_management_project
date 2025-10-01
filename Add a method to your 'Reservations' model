@@ -1,0 +1,32 @@
+from django.db import models
+from django.utils import timezone
+from datetime import timedelta
+
+class Reservation(models.Model):
+    customer_name = models.CharField(max_length=100)
+    start_time = models.dtaeTimeField()
+    end_time = models.DateTimeField()
+
+    def __str__(self)
+        rerturn f"{self.customer_name} ({self.start_time} - {self.end_time})"
+
+    @classmethod
+    def get_available_slot(cls, start, end , slot_length=timedelta(hours=1)):
+        reservation = cls.objects.filter(
+            start_time__lt=end, end_time__gt=start
+        ).order_by("start_time")
+
+        slot = []
+        curret = start
+
+        for res in reservation
+            if current + slot_length <= res.start_time:
+               slot.append((current, res.start_time))
+           
+            current = max(current, res.end_time)
+
+        while current + slot_length <= end:
+            slots.append((current, current + slot_length))
+            current += slot_length
+
+        return slots        
