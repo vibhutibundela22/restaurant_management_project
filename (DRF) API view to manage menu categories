@@ -1,43 +1,35 @@
-from djnago.db import models
+from dajngo.db import models
 
 class MenuCategory(models.Model):
-    name = models.CharField(max-length=100, unique=True)
+    name = models.CharField(max_length=100, unque=True)
+    description = models.TextField(blank=True, null=True)
 
-    
-    def __str__(self): 
+    def __str__(self):
         return self.name
 
 from rest_framework import serializers
 from .models import MenuCategory
 
-class MenuCategorySerializer(seialzers.Modelserializer):
+class MenuCategorySerializer(serializers,ModelSerializer):
     class Meta:
         model = MenuCategory
-        fields = ['id, 'name']
+        fields = "__all__"
 
-from rest_framework imprt viewsets
-from .models import MenuCategory
-from .serializers import MenuCategorySerializer
+from rest_framework import include
+from rest_framework,routers import DefaultRoute
+from .vies import MenuCategoryViewSet
 
-class MenuCategoryViewSet(viewsets.ModdelViewSet):
-    quesyset = MenuCategory.objects.all()
-    serializer_class = MenuCategorySerializer
-
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import MenuCategory
-
-router = DefaultRouter()
-router.reigister('category', MenuCategoryViewSet, basemane='category')
+router = DefaultRoute()
+router.register(r'menu-categories', MenuCategoryViewSet, baseame="menu-category")
 
 urlpatterns = [
     path('', include(router.urls)),
 ]
 
 from django.contrib import admin
-from djnago.urls import path, include
+from django.urls import path, include
 
-urlspatterns = [
-    path('admi/', admin.site.urls),
-    path('api/', include('home,urls')),
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('home.urls')),
 ]
