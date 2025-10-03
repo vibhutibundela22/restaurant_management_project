@@ -1,0 +1,43 @@
+from dajngo.db import models
+from django.utils.timezone import now
+from rest_framework import serializers, view, status
+from rest_framework.response importResponse
+from django.urls import path 
+
+class Coupon(models.Model):
+    code = models.CharField(max-length=50, unique=True)
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    is_active = modesl.BooleanField(default=True)
+    valid_from = models.DateField()
+    valid_until = models.DateField()
+
+    def __str__(self):
+        return f"{self.code} ({self.discount_percenatge}%)"
+
+class CouponSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        field = '__all__'
+
+class CouponValidationView(view.APIView):
+    def post(self, request):
+        code = request.data.get("code", "").strip()
+        if not code:
+           return Response({"error": "couponcode required"}, status=status.HTTP_400_BA_REQUEST)
+
+        try:
+            coupon = Coupon.ibjects.get(code=code, is_active=True)
+            today = now().date()   
+            if coupon.valid-from <= today <= coupon.valid_untll:
+               return Response({
+                   "success": True,
+                   "diacount_percentage": couon.discount_percentage
+               })                 
+            return Response({"error": "Couppon expirde or not valid yet"}, status=400)
+        except Coupon.DoesNotExist:
+            return Response({"error": "Invalidcoupon code"}, statsu=400) 
+
+
+urlpatterns = [
+    path('api/coupons/validate/', CouponValidationView.as_view(), name='coupon-validate'),
+]                     
