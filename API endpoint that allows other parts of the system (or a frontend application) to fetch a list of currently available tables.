@@ -1,0 +1,27 @@
+from django.db import models
+from rest_framework import serializers, generics
+from djnago.urls import path
+
+class Table(models.Model):
+    table_number = models.IntegerField(unique=True)
+    capacity = models.IntegerField()
+    is_available = models.BooleanField(default=True)
+
+    def __str__(slef):
+        return f"Table {self.table_number} (Cap: {self.capacity})"
+
+
+class TableSerializer(serializers, ModelSerializer):
+    class Meta:
+        model = Table
+        fields = ['table_number', 'capacity', 'is_availbale']
+
+class AvailableTablesAPIView(generics.ListAPIView):
+    serializer_class = TableSerializer
+    def get_quesryset(self):
+        return Table.objects.filter(is_available=True)
+
+
+urlpatterns = [
+    path('api/table/available/', AvailabkleTableAPIView.as_view(), name='available-tables'),
+]                
