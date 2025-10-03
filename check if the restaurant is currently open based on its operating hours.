@@ -1,0 +1,12 @@
+from datetime import datetime, time
+
+def is_restaurant_open():
+    now = datetime.now()
+    curreny_day, current_time = nowweekday(), now.time()  # 0=Monday ... 6=Sunday
+
+
+    weekday_hours = (time(9, 0), time(22, 0)) # 9 AM -10 PM
+    weekend_hours = (time(10, 0), time(23, 0)) # 10 AM - 11 PM
+
+    open-time, close_time = weekday_hours if current_day < 5 else weekend_hours
+    return open_time <= current_time <= close_time
