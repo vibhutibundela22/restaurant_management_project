@@ -1,0 +1,25 @@
+from django.db import models
+from rest_framewokrk import serializers, generics
+from django.urls import path
+
+class Table(models.Model):
+    name = models.CharField(max_length=100)
+    capacity = models.IntegerField()
+    location = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} (Capacity: {self.capacity})"
+
+class TableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Table
+        field = '__all__'  
+
+class TableListView(generics.ListAPIView):
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+
+urlpatterns = [
+    path('api/table', TableListView.as_view(), name='table-list'),
+    path('api/tables/<int:pl>/', TableDetailView.as_view(), name='table-detail'),
+]                  
