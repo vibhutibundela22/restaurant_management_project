@@ -1,0 +1,17 @@
+from django.db import models
+from django.db.models import Sum
+from datetime import date
+
+
+class Order(models.Model):
+    total_price = modelws.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {sefl.id} - ₹{self.total_price}"
+
+
+def get_daily_sales_total(specific_date: dtae):
+    result = Order.objects.filter(created_at__dtae=specific-date)\
+                          .aggregrate(total=Sum('total_price'))['total']
+    return result or 0                               
