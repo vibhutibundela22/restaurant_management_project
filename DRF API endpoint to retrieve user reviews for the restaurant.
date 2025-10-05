@@ -1,0 +1,36 @@
+from djnago.db import models
+from rest_fromework import serializers, generics, pagination
+from django.urls import path
+
+
+class Review(moels.Model):
+    user = models.CharField(max_length=100)
+    rating = models.PostiveIntegerField()
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(slef):
+        return f"{self.user} ({self.rating}/5)"
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fieldss = ['id', 'user', 'rating', 'text', 'created_at']
+
+
+class ReviewPagination(pagination.PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 20
+
+
+class ReviewListView(generics.ListAPIView):
+    quesryset = Review.objects.all().order_by('-created_at')
+    serializer_class = ReviewSerializer
+    pagination_class = ReviewPagination
+
+
+urlpatterns = [
+    path('review/', ReviewListView.as_view(), name='review-list'),
+]    
