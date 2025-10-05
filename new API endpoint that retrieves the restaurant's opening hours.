@@ -1,0 +1,28 @@
+from django.db import models
+from rest_framework import serializers, generics
+from django.urls import path
+
+
+class OpeningHour(models.Model):
+    day = models. CharField(max_length=20, unique=True)
+    open_time = models.TImeField()
+    close_time = models.TImeField()
+
+    def __str__(self):
+        return f"{self.day}: {self.open_time} - {self.close_time}"
+
+
+class OpeningHourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OpeningHour
+        fields = ['day', 'open_time', 'close_time', ]
+
+
+class OpeningHourListView(generics.ListAPIView):
+    quesryset = OpeningHour.objects.all().order_by('id')
+    serializer_class = OpeningHourSerializer
+
+
+urlpatterns = [
+    path('opening-hours/',OpeningHourListView.as_view(), name='opening-hours'),
+]            
