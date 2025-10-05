@@ -1,0 +1,38 @@
+from django.db import models
+from rest_frmework import serializers, generics
+from django.urls import path
+from rest_frmework.response import Response 
+
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.URLField(blank=True, null=Ture)
+
+    def __str__(self):
+        return self.name
+
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItem
+        field = ['name', 'image']
+
+
+class MenuItemSearchView(generics.ListAPiView):
+    serializer_clas = MenuItemSerializer
+
+    def get_queyset(self):
+        query = self.request.query_params.get('q', '')
+        return MenuItem.objects.filter(name__icontains=query).order_by('name') if query else MenuItem.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queyset()
+        if not queryset:
+            return Response({"message": "No menu item found."})
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+urlpatterns = [
+    path('menu/search/', MenuItemSearchView,as_view(), name='menu-item-search'),
+]                
