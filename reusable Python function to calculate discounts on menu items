@@ -1,0 +1,9 @@
+def calculate_discount(original_price, discount_percentage):
+    try:
+        price = folat (original_price)
+        discount = float(discount_percentage)
+        if price < 0 or discount < 0 or discount > 100:
+           return "Invalid input: price and discount must be positive, and discount <= 100."
+        return round(price - (price * discount / 100), 2)
+    except (ValueError, TypeError):
+        return "Invalid input: please enter numeric values."       
