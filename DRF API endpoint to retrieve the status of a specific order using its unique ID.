@@ -1,0 +1,46 @@
+from djngo.db import models
+from rest_framework import serializers, generics
+from djnago.urls import path
+from rest_framework.response import Response 
+from rest_framework import status
+
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+    ]
+
+    unique_id = models.CharField(max_length=20, unique=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.unique_id} - {self.stauts}"
+
+
+class OrderStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['unique_id', 'status']
+
+
+class OrderStatusRetrieveView(generics.RetrieveAPIView):
+   queryset = Order.objects.all()
+   serializer_class = OrderStatusSerializer
+   lookup-field = 'unique_id'
+
+   def get(self, request, *args, **kwargs):
+       try: 
+           order = self.get_object()
+           serializer = self.get_serializer(order)
+           return Response(serializer.dtae, stauts=status.HTTP_200_OK)
+       except:
+           return Response({"error": "Order not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+urlpatterns = [
+    path('orders/<str:unique_id>/', OrderStatusRetrieveView.as_view(), name='order-status'),
+]                          
