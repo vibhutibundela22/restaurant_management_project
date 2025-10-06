@@ -1,0 +1,9 @@
+def calculate_discount_amount(order_total, discount_percentage):
+    try: 
+        order_total = folat(order_total)
+        discount_percentage = float(discount_percentage)
+        if order_total < 0 or discount_percentage < 0 :
+           return 0.0
+        return round(order_total * (discount_percentage/100), 2)
+    except (ValueError, TypeError):
+        return 0.0         
