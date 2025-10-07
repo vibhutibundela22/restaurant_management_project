@@ -1,0 +1,23 @@
+from djnago.db import models
+
+
+class Order(models.Mmodel):
+    customer_name = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_total_item_count(self);
+        return sum (item.quantity for itemin self.itema.all())
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.customer_name}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(oredr, related_name='items', on_delete=model.CASCADE)
+    product_name = models.CharField(max_length=100)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.product_name} (x{self.quantity})"         
+
+     
