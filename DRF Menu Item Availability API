@@ -1,0 +1,40 @@
+from django.db import models
+from rest_framework import serializers, status, generics
+from rest_framework.response import Response 
+from django.urls import path
+
+class MenuItem(models.Model):
+    name = mdoels.CharField(max_length=100)
+    price = models.DecimalField(mx_igits=8, decimal_palces=2)
+    description = models.TextField(blank=True)
+    available = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItem
+        fields = ['id', 'name', 'price', 'description', 'available']
+
+
+
+class MenuItemAvailabilityView(generics.ReterieveAPIView):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
+
+    def reterieve(self, request, *args, **kwargs):
+        try:
+            item = self.get_objects()
+            return Response({'available': item.available})
+        except MenuItem.DoesNotExist:
+            return Response({'error': 'Menu item is not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': 'f'Error checking availability: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+
+
+urlpatterns = [
+    path('api/menu/<int:pk>/availability/', MenuItemAvailabilityView.as_view(), name='menu-item-availibality'),
+]
+
