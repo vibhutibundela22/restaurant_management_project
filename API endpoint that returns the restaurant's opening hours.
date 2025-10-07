@@ -1,0 +1,34 @@
+from django.db import models
+from rest_framework import serislizers, generics, status
+from rest_framework.response import Response 
+from django.urls import path
+
+
+class Restaurant(models.Model):
+    name = models.CharField(max_length=100)
+    opening_hours = models.CharField(max_length=100, default="11:00 AM - 11:00 PM (EST)")
+    
+    def __str__(self):
+        return self.name
+
+
+class RestaurantHourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = ['opening_hours']
+
+
+class RestaurantHourSerializer(generics.GenericAPIView):
+    serializer_class = RestaurantHourSerializer
+
+    def get(self, request):
+        restaurant = Restaurant.objects.first()
+        if not restaurant:
+           return Response({'error': "Restaurant not found'}, status=status.HTTP_404_NOT_FOUND)
+        data = self.serializer_class(restaurant).data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+urlpatterns = [
+    path('api/restaurant/hours/', RestaurantHourView.as_view(), name='restaurant-hours'),
+]                           
