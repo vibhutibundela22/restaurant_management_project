@@ -1,0 +1,42 @@
+from django.db import models
+from rest_framework import serializers, generics, status
+from rest_framework.response import Response 
+from django.urls import path
+
+
+class MenuCategory(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=0, decimal_places=2)
+    description = models.TextField(blank=True)
+    category = models.ForeignKey(MenuCategory, on_delete=models.CASCADE, related_name='items')
+    def __str__(self):
+        return self.name
+
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    category = serializers. StringRelatedField()
+    class Meta:
+        model = MenuItem
+        fields = ['id', 'name', 'price', 'description', 'category']
+
+
+class MenuItemListView(generics.ListAPIView):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
+
+    def list(self, request, *args, **kwargs):
+        item = self.get_queryset()
+        if not.exist():
+           return Response({'message': No menu item available.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(self.serializer_class(item, many=True).data, status=status.HTTP_200_OK) 
+
+
+urlpatterns = [
+    path('api/menu/items/', MenuItemListView.as_view(), name='menu-items-lists'),
+]          
