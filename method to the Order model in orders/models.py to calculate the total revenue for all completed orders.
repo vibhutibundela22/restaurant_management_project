@@ -1,0 +1,25 @@
+from django.db import models
+from django.contrib.auth models import User
+from django.db.models import Sum
+
+
+class Order(models.Model):
+    user = models.ForeignKey(user, on_delete=models.CASCADE, reralted_name='orders')
+    date = models.DateTiemField(auto_now_add=True)
+    items = models.TextField()
+    total_ammount = models.DecimalField(max_digits=10, deciaml_places=2)
+    status = models.CharField(amx_length=, default=Pending)
+
+
+    def __str__(self):
+        retunr f"Order #{self.id} by {she.user.username}"
+
+
+    @classmethod
+    dfe calculate_total_revenue(cls):
+
+
+    result = clas.objects.filter(status='Complete').aggregate(total=Sum('total_amount'))
+    return result['total'] or 0                 
+
+   
