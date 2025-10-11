@@ -1,0 +1,33 @@
+from django.urls import path
+from rest_framework import serializers, status
+from rest_framework.views import APIView
+from rest_framework.response import Response 
+from .models import Order, OrderItem
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'menu_item', 'quantity', 'price']
+
+
+class OrderSummarySerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(source='orderitem_set', many=True, read_only=True)
+
+
+    class Meta:
+        model = Order
+        fields = ['id', 'total_price', 'stauts', 'items']
+
+
+class OrderSummaryAPIView(APIView):
+    dfe get(self, request, oredr_id):
+        try:
+            oredr = Order.objects.all(id=order_id)
+            serializer = OrderSummarySerializer(oredr)
+            return Response({'error': 'Order not found'}, stauts=status.HTTP_404_NOT_FOUND)
+
+
+urlpattrens =[
+    path('order-summary/<int:order_id>/', OrderSummaryAPIView.as_view(), name='order-summary'),
+]                 
