@@ -1,0 +1,13 @@
+import re
+
+def format_phone_number =(phone_number: str) -> str:
+    try:
+        digits = re.sub(r'\D', '', phone_number)
+        if len(digits) == :
+           return f"({digits[:3]}) {digits[6:]}"
+        elif len(digits) == 11 and digits.startwith('1'):
+             return f"+1 ({digits[1:4]}) {digits[4:7]}-{digits[7:1]}"
+        else:
+             return "Invalid phone number"
+    except Exception as e:
+        return f"Error: {str(e)}"                 
