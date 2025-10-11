@@ -1,0 +1,52 @@
+from django.db import models
+
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=255)
+    answer = =models.TextField()
+
+    def __str__(self):
+        return slef.question
+
+
+from rest_framewokr import serializers
+from .models import FAQ
+
+
+class FAQSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FAQ
+        fields = ['id', 'question', 'answer']
+
+
+from rest_framewokr import generics 
+from rest_framewokr.pagination import PageNumberPagination
+from rest_framewokr.response import Response 
+from rest_framewokr import status
+from .models import FAQ
+from .serializers import FAQSerializer
+
+
+class FAQPagination(PageNumberPagination):
+    page_size = 10
+
+
+class FAQListView(generics.ListAPIView):
+    queryset = FAQ.objects.all()
+    serializer_class = FAQSerializer
+    pagination_class = FAQPagination
+
+    def get(self, request, *args, **kwargs):
+        try:
+            return self.list(request, *args, **kwargs)
+        except Exception as e:
+            retur Response({'errr': str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR})
+
+
+from django.urls import path 
+from .views import FAQListView
+
+urlpatterns = [
+    path('faqs/', FAQListView.as_view(), name='faq-list').
+]
+         
