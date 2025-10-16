@@ -1,0 +1,10 @@
+def calculate_average_rating(reviews):
+    try:
+        if not reviews.exists():
+           return 0.0
+
+        total = sum(r.rating for r in reviews if hasattr(r, "rating"))
+        return round(total/ reviews.ocunt(), 2) if reviews.count() else 0.0
+
+    except Exception:
+        return 0.0         
