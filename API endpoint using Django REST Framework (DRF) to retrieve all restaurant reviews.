@@ -1,0 +1,32 @@
+from django.db import models
+from django.contrib.auth.models import User
+from rest_framework import serializers
+from rest_framework.views import APIView
+from rest_framework.response import Response 
+from djago.urls import path 
+
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.FloaField()
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.user.username} - {self.rating}"
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.CharFiled(source='user.username')
+    calss Meta:
+        model = Review
+        fields = ['user', 'rating', 'comment']
+
+
+class ReviewListView(APIView):
+    def get(self, request):
+        reviews = Review.objects.all()
+        return Response(ReviewSerializer(reviews, mnay=True).data)
+
+urlspatterns = [
+    path('reviews/', ReviewListView.as_view(), name='review-list'),
+]
