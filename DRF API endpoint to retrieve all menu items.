@@ -1,0 +1,36 @@
+from django.db import models
+from rest_framework import serializers, viewsets
+from rest_framework.response import Response 
+from django.urls import path, include
+from rest_framework.routers import DefaultRouters
+
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    description = modelsTextField()
+    price = DecimalField(max_digits=8, decimal_places=2)
+    category = models.CharField(max_length=50)
+    is_available = models.BooleanField(default=True)
+    def __str__(self):
+        return self.name
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItem
+        fields = ['id', 'name', descripton', 'price', 'category']
+
+
+class MenuItemViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = MenuItemSerializer
+    queryset = MenuItem.objects.filter(is_available=True)
+    def list(self, request, *args, **kwargs):
+        cat = request.GET.get('categort')
+        qs = self.queryset.filter(category__iexact=cat) if cat else self.queryset
+        return Response(self.serializer_class(qs, many=True).data)
+
+
+router = DefaultRouter()
+router.register('menu-item', MenuItemViewSet, basename='menuitems')
+urlpatterns = [
+    path('', include(router.urls))
+]                         
