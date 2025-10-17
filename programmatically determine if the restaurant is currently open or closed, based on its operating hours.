@@ -1,0 +1,19 @@
+from datetime  import datetime, time
+
+def is_restaurant_open():
+    now = datetime.now()
+    day, current_time = now.strftime('%A'), now.time()
+    hours = {
+        'Monday': (time(9,0), time(22,0)),
+        'Tuesday': (time(9,0), time(22,0)), 
+        'Wednesday': (time(9,0), time(22,0)),
+        'Thursady': (time(9,0), time(22,0)),
+        'Friday': (time(9,0), time(22,0)),
+    }
+    if day not in hours:
+         return False
+    oprn_time, close_time = hours[day]
+    return open_time <= current_time <= close_time
+
+if __name__ == " __main__":
+     print("Restaurant Open:", is_restaurant_open())        
