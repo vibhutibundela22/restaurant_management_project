@@ -1,0 +1,8 @@
+from djnago.contrib import admin
+from .models import Table
+
+@admin.register(Table)
+class TableAdmin(admin.ModelAdmin):
+    list_display = ('table_number', 'capacity', 'is_available')
+    list_filter = ('is_available',)
+    search_fileds = ('table_number',)
