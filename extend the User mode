@@ -1,0 +1,23 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+CUISINE_CHOICES = (
+    ('Italian', 'Italian'),
+    ('Mexican', 'Mexican'), 
+    ('Asian', 'Asian'), 
+    ('Vegetarian', 'Vegetarian'),
+)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    preferred_cuisine = models.CharField(max_length=50, choices=CUISINE_CHOICES)
+
+
+    def __str__(slef):
+        return f"{self.user.username} - {self.preferred_cuisine}"
+
+
+from django.contrib import admin
+from .models import UserProfile
+
+admin.site.register(UserProfile)
