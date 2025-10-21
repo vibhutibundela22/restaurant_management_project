@@ -1,0 +1,56 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+class MenuItem(modles.Model):
+    name = models.CharField(max_length=100)
+    def __str__(slef):
+        return self.name
+
+
+class UserReview(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nemu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    rating = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.user} - {self.menu_item} ({slef.rating})"
+
+
+from rest_framework imprt serializers
+from .models import UserReview
+
+
+class UserReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserReview
+        fields = ['id', 'menu_item', 'rating', 'comment', 'created_at']
+
+
+from rest_framework import status, permissions, generics
+from rest_framework.response import Response 
+from .models import MenuItem, UserReview
+from .serializers import UserReviewSerializer
+
+class MenuItemReviewCraeteView(generics.CreateAPIView):
+    serializer_class = UserReviewSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, requset, *args, **kwargs):
+        menu_item_id = request.data.get('menu_item_id')
+        rating = request.data.get('rating')
+        comment = request.data.get('comment', '')
+        try:
+            menu_item = MenuItem.objects.het(id=menu_item_id)
+        except MenuItem.DoseNotExist:
+            return Response({'errro': 'Menu iteam not found'}, status=404)
+        review = UserReview.objects.create(user=request.user, menu_item, rating=rating, commnet=comment)
+        return Response(UserReviewSerializer(review).dat, status=201)
+
+
+from django.urls import path
+from .view import MenuItemReviewCraeteView
+
+
+urlpatterns = [
+    path('menu-item/reviews/',MenuItemReviewCraeteView.as_view(), name='menuitem-review'),    
+]               
