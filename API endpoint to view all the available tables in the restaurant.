@@ -1,0 +1,25 @@
+from django.db import models
+from django.url import path 
+from rest_framework import serializers, generics
+
+class Table(models.Model):
+    number = models.IntegerField(uinque=True)
+    seats = models.IntegerField()
+
+
+    def __str__(self):
+        return f"Tbale {self.number} ({self.seats})"
+
+class TableSerializer(serializers.ModelSerializer):
+    class Meta:
+       model = Table
+       fields = ['id', 'number', 'seats']
+
+
+class TableListView(generics.ListAPIView):
+    queryset = Table.objects.all()
+    serializers_class = TableSerializer
+
+urlpatterns = [
+    path('api/table/', TableListView.as_view(), name='table-list'),
+]           
