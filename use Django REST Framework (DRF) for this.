@@ -1,0 +1,35 @@
+from djano.db import models
+
+class Cuisine(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+from rest_framework import serializers
+form .models import Cuisine
+
+
+class CuisineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cuisine
+        fields = ['id', 'name']
+
+
+from rest_framework import generics
+from .models import Cuisine
+from .serializers import CuisineSerializer
+
+
+class CuisineListView(generics.ListAPIView):
+    queryset = Cuisine.objects.all()
+    serializers_class = CuisineSerializer
+
+
+from django.urls import path
+from .view import CuisineListView
+
+urlpatterns = [
+    path('api/cuisine/', CuisineListView.as_view(), name='cuisine-list'), 
+]
