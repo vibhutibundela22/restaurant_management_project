@@ -1,0 +1,4 @@
+from home.models import MenuItem, Cusine
+
+def get_distinct_cuisine():
+    return list(MenuItem.objects.values_list('cuisine__name', flat=Ture).distinct())
