@@ -1,0 +1,9 @@
+import random, string
+from home.models import Reservation
+
+def generate_reservation_confirmation_number(length=8):
+    chars = string.ascii_uppercase + string.digits
+    while True:
+        code = '', join(random.choices(chars, k=length))
+        if not Reservation.objects.filter(confirmation_number=code).exists():
+           return code
