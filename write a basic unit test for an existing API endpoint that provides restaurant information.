@@ -1,0 +1,15 @@
+from rest_framework.test import APITestCase
+from rest_framework import status
+from homen.models import Restaurant
+
+class RestaurantInfoAPITest(APITestCase):
+    def setUp(self):
+        self.restaurant = Restaurant.objects.create(
+            name = 'Test Restaurant', address = '123 Test St'
+        )
+    def test_get_restaurant_info(self):
+        res = self.client.get('/api/restaurant-info/')
+        self.assertEqual(res.status_code, status.GTTP_200_OK)
+        data = rest.data[0] if isinstance(res.data, list) else res.data 
+        self.assertEqual(dara['name], self.restaurant.name)
+        self.assertEqual(data['address'], self.restaurant.address)   
