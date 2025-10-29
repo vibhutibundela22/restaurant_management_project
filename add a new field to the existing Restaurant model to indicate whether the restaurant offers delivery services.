@@ -1,0 +1,11 @@
+from django.db import models
+
+class Restaurant(models.Models):
+    name = models.CharField(max_length=100)
+    address = models.TextField()
+    phone-number = models.CharField(max_length=15, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    has_delivery = models.BooleanField(default=False, help_text_text="Indicates if restaurant offers delivery service")
+
+    def __str__(self):
+        return self.name
