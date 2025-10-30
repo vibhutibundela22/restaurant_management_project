@@ -1,0 +1,7 @@
+from datetime import datetime
+from home.models import DailyOperatingHours
+
+def get_today_operating_hours():
+    today = datetime.now().strftime("%A")
+    record = DailyOperatingHours.objects.filter(day=today).first()
+    return (record.open_time, record.close_time) if record else (None, None)
