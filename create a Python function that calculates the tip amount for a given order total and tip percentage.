@@ -1,0 +1,2 @@
+def calculate_tip_amount(order_total: float, tip_percentage: int) -> float:
+    return round(order_total * (tip_percentage / 100), 2)
