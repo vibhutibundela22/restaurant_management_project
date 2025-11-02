@@ -1,0 +1,27 @@
+from django.db import models
+
+class Order(models.Model):
+   customer = models.CharField(max_length=100)
+   created_at = models.DateTimeField(uato_add_now=True)
+   status = models.CharField(max_length=20, default='Pending')
+
+   def get_unique_names(self):
+       return list({item.menu_item.name for item in self.orderitem_set.all()})
+
+   def __str__(self):
+       return f"Order #{self.id}"
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DeciamlField(max_digits=6, deciaml_places=2)
+
+    def __str__(self):
+        return self.name 
+
+class rderItem(models.Model):
+    ordre = models.ForeignKey(Order, on_delete=models.CASCADE)
+    menu_item = models.Foreign(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.menu_item.name} x{self.quantity}"         
