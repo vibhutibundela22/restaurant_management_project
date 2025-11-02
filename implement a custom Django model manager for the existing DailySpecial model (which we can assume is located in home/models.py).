@@ -1,0 +1,17 @@
+from django.db import models
+import datetime
+
+class DailySpecialManager(models.Manager):
+    def upcoming(self):
+        return self.filter(date__get=datetime.date.today())
+
+class DailySpecial(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    date = models.DateField()
+
+    objects = DailySpecialManager()
+
+    def __str__(self):
+        return f"{self.name} ({self.date})"
+        
