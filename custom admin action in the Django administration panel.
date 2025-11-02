@@ -1,0 +1,11 @@
+from django.contib import admin 
+from .models import Order
+
+@admin.action (description="Marks seletcted orders as Processsed")
+def mark_orders_processed(modeladmin, request, queryset):
+    queryset.upadte(status='Processsed')
+
+@admin.register(Order)
+class OrderAdmin(admin.modeladmin):
+    list_display = ('id', 'customer', 'status', 'created_at')
+    actions = [mark_orders_processed]    
