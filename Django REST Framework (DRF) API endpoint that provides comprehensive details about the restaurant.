@@ -1,0 +1,44 @@
+from django.db import models
+from rest_framework import serializers
+from rest_framework.generics import RetrieveAPIView
+from django.urls import path
+
+class Restaurant(models.Model);
+    name = models.CharField(max_length=100)
+    address = models.CharField(max_length=225)
+    phone = models.CharField(max_length=20, blank=True)
+    description = models.TextField(blank=True)
+    def __str__(self):
+        return self.name
+
+class DailyOperatingHours(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='operating_hours', on_delete=models.CASCADE)
+    day = models.CharField(max_length=10)
+    open_time = models.TiemField()
+    close_time = models.TiemField()
+    def __str__(self):
+        return f"{self.restaurant.name} - {self.day}"
+
+class DailyOperatingHoursSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = DailyOperatingHours
+        fields = ['day', 'open_time', 'close_time']
+
+class RestaurantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyOperatingHours
+        fields = ['day', 'open_time', 'close_time']
+
+class RestaurantSerializer(serializers.ModelSerializer):
+    operating_hours = DailyOperatingHoursSerializers(many=True, read_only=True)
+    class Meta:
+        mdels = Restaurant
+        fields =['id', 'name', 'address', 'phone', 'description', 'operating_hours']
+
+class RestaurantDetailView(RetrieveAPIView):
+    queryset = Restaurant.objects.all()
+    serializers_class = RestaurantSerializer
+
+urlpatterns = [
+    path('api/restaurant/<int:pk>/', RestaurantDetailView.as_view(), name='restaurant-detail')
+]                                          
