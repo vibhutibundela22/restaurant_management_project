@@ -1,0 +1,8 @@
+from datetime import datetime
+
+def format_datetime(dt):
+    if not dt:
+       return ""
+    if not isinstance(dt, datetime):
+       raise TypeError("Expected a datetime object or None")
+    return dt.strftime("%B %-d, %Y at %-I:%M %p") if hasattr(dt, "strftime") else ""      
