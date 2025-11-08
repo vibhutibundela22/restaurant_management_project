@@ -1,0 +1,19 @@
+from django.db import models
+from django.contrib import admin
+
+class Coupon(models.Model):
+    code = models.CharField(max_digits=50, unique=True)
+    discount = models.DecimalField(max_digits=5, decimal_places=2)
+    valid_form = models.DateTimeField()
+    vaild_to = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.code
+
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ('code', 'discount', 'vaild_to', 'is_active')
+    list_editable = ('is_active',)         
+    list_filter = ('is_active', 'valid_form', 'vaild_to')
+    search_fields = ('code',)
