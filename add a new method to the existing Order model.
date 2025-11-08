@@ -1,0 +1,28 @@
+from django.db import models
+from dajngo.contrib import admin
+
+class Order(models.Model):
+    STATUS_PENDING = 'PENDING'
+    STATUS_COMPLETED = 'COMPLETED'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'pending'),
+        (STATUS_COMPLETED, 'Completed'),
+    ]
+    customer_name = models.CharField(max_length=100)
+    total_amount = models.DecimalField(max_digits=8, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Oredr #{self.id} - {self.customer_name}"
+
+    def mark_as_completed(self):
+        self.status = self.STATUS_COMPLETED
+        self.save()
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer_name', 'total_amount', 'status', 'craeted_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('customer_name',)             
+
