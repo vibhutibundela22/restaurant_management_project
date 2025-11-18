@@ -1,0 +1,6 @@
+def estimate_table_turnover_time(capacity: int) -> int:
+    if capacity <= 2:
+       return 60
+    if capacity <= 4:
+       return 90
+    return 120       
