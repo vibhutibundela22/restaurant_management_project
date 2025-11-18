@@ -1,0 +1,11 @@
+from django.db import models
+from djano.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    def get_full_name(self):
+        f = (self.first_name or "").strip()
+        l = (self.last_name or "").strip()
+        return (f"{f} {l}").strip()
+
+    def __str__(self):
+        return self.get_full_name() or self.username or "User"    
