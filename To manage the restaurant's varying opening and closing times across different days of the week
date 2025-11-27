@@ -1,0 +1,26 @@
+from django.db import models
+
+class Restaurant(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+DAYS = [
+    ('Mon', 'Monday'),
+    ('Tue', 'Tuesday'),
+    ('Wed', 'Wednesday'),
+    ('Thu', 'Thursday'),
+    ('Fri', 'Friday'),
+    ('Sat', 'Saturday'),
+    ('Sun', 'Sunday'),
+]        
+
+class DailyOperatingHours(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    day_pf_week = models.CharField(max_length=3, choices=DAYS)
+    opening_time = models.TimeField()
+    closing_time = models.TimeField()
+
+    def __str__(self):
+        return f"{self.get_day_of_week_display()} ({self.opening_time} - {self.closing_time})"
