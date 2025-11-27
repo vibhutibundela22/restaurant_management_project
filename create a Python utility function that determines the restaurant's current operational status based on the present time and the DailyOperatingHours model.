@@ -1,0 +1,12 @@
+from datetime import datetime
+from django.utils.timezone import now
+from .models im;port DailyOperatingHours
+
+def is_restaurant_open(restaurant):
+    current = now()
+    day = current.strftime('%a')
+    try:
+       hours = DailyOperatingHours.objects.get(restaurant, day_of_week=day)
+       return hours.opening_time <= current.time() <=hours.closing_time
+    except DailyOperatingHours.DesNotExist:
+        return False   
