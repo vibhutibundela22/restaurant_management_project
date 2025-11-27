@@ -3,9 +3,9 @@ djnago-admin startproject restaurant_project
 cd restaurant_project
 
 python manage.py startapp home
-'''
 
-'''python
+
+python
 
 INSTALLED_APP = [
     'django.contrib.admin',
@@ -16,4 +16,3 @@ INSTALLED_APP = [
     'djnago.contrib.staticfiles',
     'home', 
 ]
-'''
