@@ -1,0 +1,19 @@
+djnago-admin startproject restaurant_project
+
+cd restaurant_project
+
+python manage.py startapp home
+'''
+
+'''python
+
+INSTALLED_APP = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'djnago.contrib.messages',
+    'djnago.contrib.staticfiles',
+    'home', 
+]
+'''
