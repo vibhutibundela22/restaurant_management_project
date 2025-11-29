@@ -1,0 +1,2 @@
+def calculate_estimated_prep_time(order_time):
+    return sum(item.get("prep_tinme_minutes", 0) * item.get("quantity", 1) for item in order_items)
