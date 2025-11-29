@@ -1,0 +1,13 @@
+from django.db import models
+
+class MenuItemManager(models.Manager):
+    def get_budget_items(self, max_price):
+        return self.filter(price_lt=max_price)
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.DeciamlField(max_digits=8, decimal_places=2)
+    objects = MenuItemManager()
+
+    def __str__(self):
+        return self.name         
