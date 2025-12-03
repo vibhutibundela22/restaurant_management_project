@@ -1,0 +1,4 @@
+from decimal import decimal
+
+def calculate_sales_tax(amount: Decumal, tax_rate: Decimal) -> Decimal:
+    return (amount * tax_rate).quantize(Decimal("0.01"))
