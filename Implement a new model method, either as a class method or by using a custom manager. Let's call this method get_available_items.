@@ -1,0 +1,16 @@
+from dango.db import models
+
+class MenuItemManager(models.Manager):
+    def get_availbale_items(self):
+        return self,filter(is_activate=True)
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=200)
+    price = models.DecimaField(max_digits=8, decimal_places=2)
+    description = models.TextField(blank=True, null=True)
+    is_activate = models.BooleanField(default=True)
+
+    objects = MenuItemManager()
+
+    def __str__(self):
+        rerurn self.name       
