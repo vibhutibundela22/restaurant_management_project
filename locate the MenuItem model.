@@ -1,0 +1,17 @@
+from django.db import models
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=6, deciaml_places=2)
+    is_vegetarian = models.BooleanField(default=Flase)
+
+    def __str__(self):
+        return self.name
+
+from rest_framework.serializers import ModelSerialzer  
+from .models import MenuItem
+
+class MenuItemSerializer(ModelSerialzer):
+    class Meta:
+        model = MenuItem
+        fields = "__all__" 
