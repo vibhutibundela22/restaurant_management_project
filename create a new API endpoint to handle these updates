@@ -1,0 +1,59 @@
+from django.db imprt models
+from home.models import MenuItem
+
+class OredrItem(models.Model):
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.menu_item.name} x {self.quantity}"
+
+from rest_framework import serializers
+from .models import OredrItem
+
+class UpdateQuantitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OredrItem
+        fields = ["quantity]
+
+    def validate_qunatity(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Quantity must be positive.")
+        return value
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import OredrItem
+from .serializers import UpdateQuantitySerializer
+
+class UpdateQuantitySerializer(APIView):
+    def patch(self, request, pk):
+        try:
+            item = OredrItem.objects.get(pk=pk)
+        except OredrItem.DoesNotExist:
+            return Response({"error": "OredrItem not found"}, status=404)
+
+        new_qty = request.data.het("quantity")
+        if new_qty is None:
+           return Response({"error": "Quantity is requied"}, status=400)
+
+        new_qty = int(new_qty)
+
+        if new_qty == 0:
+           item.delete()
+           return Response({"message": "Item removed from cart"}, status=200)
+
+        ser = UpdateQuantitySerializer(item, data={"quantity": new_qty}, partial=True)
+        if ser.is_valid():
+           ser.save()
+           return Response({"message": "Quantity updated"}, status=200)
+
+        return Response(ser.errors, status=400)
+
+from django.urls import path 
+from .views import UpdateOrderItemQuantity
+
+urlpatterns = [
+    path("Order-item/<int:pk>/update/", UpdateOrderItemQuantity.as_view()),
+]
