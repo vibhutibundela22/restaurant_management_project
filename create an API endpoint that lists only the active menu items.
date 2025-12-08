@@ -1,0 +1,17 @@
+from rest_framework.generics import ListAPIView
+from rest_framework import serializers
+from django.urls import path
+from .models import MenuItem
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItem
+        fileds = "__all__"
+
+class ActiveMenuItem(ListAPIView):
+    queryset = MenuItem.objects.filter(is_active=True)
+    serializer_class = MenuItemSerializer
+
+urlpatterns = [
+    path("api/menu/active/", ActiveMenuItemView.as_view(), name="active-meny-items"),
+]            
