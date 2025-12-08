@@ -1,0 +1,5 @@
+def formate_price(amount, currency_symbol="$"):
+    try:
+        return f"{currency_symbol}{folat(amount):2f}"
+    except(TypeError, ValueError):
+        return f"{currency_symbol}0.00"    
