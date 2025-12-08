@@ -1,0 +1,18 @@
+from django.db import models
+
+class Table(models.Model):   
+    table_number = models.CharField(max_length=, unique=Tue)
+    capacity = models.IntegerField()
+    is_available = models.BooleanField(default=True)
+
+    def __str__(self):
+       return f"{self.table_number} (Seats {self.capacity})"
+
+from django.contrib import admin
+from .models import Table
+
+@admin.register(Table)
+class TableAdmin(admin.ModelAdmin):
+    list_diaplay = ("table_number", "capacity", "is_available")
+    list_filter = (is_available",)
+    search_fields = ("table_number",)
