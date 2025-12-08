@@ -1,0 +1,34 @@
+from django.db import modesl
+
+class HolidayHours(models.Model):
+    restaurant = models.ForeignKey("Restaurant", on_delete=models.CASCADE, related_name="holiday_hours")
+    date = models.DateField()
+    opening_time = models.TimeField()
+    closing_time = model.TimeField()
+    description = models.CharFIeld(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.sedcription or 'Holiday'} - {self.date}"
+         
+
+from rest_framework import serializers, generics
+from django.urlsimpirt path
+from .models import HolidayHours
+
+class HolidayHoursSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HolidayHours
+        fields = "__all__"
+
+class HolidayHoursListView(generics.ListAPIView):
+    serializer_class = HolidayHoursSerializer
+
+    def get_queryset(self):
+        qs = HolidayHours.objects.all()
+        date = self.request.query_parama.get("date")
+        return qs.filter(date=date) if date else qs
+
+urlpatterns = [
+    path("api/holiday-hours/", HolidayHoursListView.as_view(), name="holiday-hours"),
+]        
+
