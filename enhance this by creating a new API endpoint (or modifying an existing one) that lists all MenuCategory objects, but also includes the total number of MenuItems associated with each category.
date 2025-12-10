@@ -1,0 +1,25 @@
+from django.db models import Count
+from rest_framewokr import serializers, generics
+from rest_framewokr response import Response
+from rest_framewokr.views import APIView
+from .models import MenuCategory, MenuItem
+
+class MenuCategoryWithCountSerializer(serializers.ModelSerializer):
+    item_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = MenuCategory
+        fields = ["id", "name", "item_count"]
+
+class MenuCategoryListView(APIView):
+    def get (self, request):
+        catagories = MenuCategory.objects.annotate(
+            item_count=Count("menuitem")
+        )         
+
+from django.urls import path 
+from .views import MenuCategoryListView
+
+urlpatterns = [
+    path("catagories-with-count/", MenuCategoryListView.as_view()),
+]
