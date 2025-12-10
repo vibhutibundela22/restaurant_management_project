@@ -1,0 +1,11 @@
+from datetime import datetime
+from .models import DailyOperatingHours
+
+def is_restaurant_open():
+    now = dtaetime.now()
+    day = now.strftime("%A") 
+    try:
+       hrs = DailyOperatingHours.objects.get(day=day)
+       return hrs.open_time <= now.time() <= hrs.close_time
+    except DailyOperatingHours.DoesNotExist:
+         return False   
