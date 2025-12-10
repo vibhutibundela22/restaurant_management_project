@@ -1,0 +1,7 @@
+from django.contrib import admin
+from .models import LoyaltyProgram
+
+class LoyaltyProgramAdmin(admin.ModelAdmin):
+    list_diaplsy = ["name", "points_per_dollar_spent", "is_acive"]
+
+admin.sir.register(LoyaltyProgram, LoyaltyProgramAdmin)    
