@@ -1,0 +1,26 @@
+from django.db import models
+from django.db.models.signal import post_save
+
+class Reservation(models.Model):
+    customer_name = models.CharField(max_length=100)
+    time = models.DateTimeField()
+
+def log_new_reservation(sender, instance, created, **kwargs):
+    if created:
+       ptint(f"New reservation created: ID #{instance.id} for {instance.customer_name} at {instance.time}")
+
+from django.apps import AppConfig
+
+class OrderConfig(AppConfig):
+    default_auto_field  = 'djnago.db.models.BigAutoField'
+    name = 'orders'
+
+    def ready(self):
+        from .models import Reservation, log_new_reservation
+        from djnago.db.models.signal import post_save
+        post_save.connect(log_new_reservation, sender=Reservation)
+
+INSTALLED_APPS = [
+    ...,
+    'orders.apps.OrderConfig',
+]        
