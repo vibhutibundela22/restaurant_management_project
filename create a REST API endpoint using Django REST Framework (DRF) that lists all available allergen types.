@@ -1,0 +1,16 @@
+from ret_framework import serilaizers, generics
+from django.urls import path 
+from menu.models import Allergen
+
+class AllergenSerializer(serilaizers.ModelSerializer):
+    class Meta:
+        model = Allergen
+        fileds = ("id", "name")
+
+class AllergenListAPIView(generics.ListAPIView):
+    queryset = Allergen.objects.all()
+    serilaizer_class = AllergenSerializer
+
+urlpatterns = [
+    path("api/allergens/", AllergenListAPIView.as_view(), name="allergen-list"),
+]                  
