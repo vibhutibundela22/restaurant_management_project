@@ -1,0 +1,7 @@
+from home.models import HolidayClouser
+
+def is_restaurant_closed_on_holiday(date_to_check):
+    return HolidayClouser.objects.filter(
+        date=date_to_check,
+        is_full_day_clouser=True   
+    ).exists()
