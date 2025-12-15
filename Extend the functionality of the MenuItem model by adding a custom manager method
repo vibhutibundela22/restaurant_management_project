@@ -1,0 +1,25 @@
+from django.db import models
+from django.utils import timezone
+
+class MenuItemManager(models.Manager):
+    def get_discounted_items(self):
+        return self.filter(
+            discount__is_active=True,
+            discount__end_date__gte=timezone.now()
+        )
+
+class MenuItem(models.Model):
+    name = models.CharField(mXax_length=150)
+    price = models.DecimalField(mXax_digits=6, decimal_places=2)        
+    discount = models.ForeignKey(
+        "Discount",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="menu_items",
+    )
+
+    objects = MenuItemManager()
+
+    def __str__(self):
+        return self.name
