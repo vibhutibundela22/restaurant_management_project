@@ -11,5 +11,8 @@ class HomeConfig(AppConfig):
 
         @receiver(pre_save, sender=MenuItem)
         def log_price_change(sender, instance, **kwargs):
-            if not instace.pk:
+            if not instance.pk:
                return 
+            old_price = sender.objects.filter(pk=instance.pk).values_list("price", flat=True).first()
+            if old_price is not None and old_price != instance.price:
+               print(f"Price changed for '{instance.name}':{old_price} -> {instance.price}")
