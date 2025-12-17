@@ -1,0 +1,31 @@
+import csv
+from django.core.management.base import BaseCommand
+from home.models import MenuCategory, MenuItem
+
+class Command(BaseCommand):
+    help = "Import menu items from a CSV file"
+
+    def add_arguments(self,parser):
+        parser.add_arguments(
+            "--file",
+            type=str,
+            default="menu_item.csv",
+            help="Path to CSV file",
+        )
+
+    def handle(self, *args, **options):
+        with open(options["file"], newline="", encoding="utf-8") as f:
+           for row in csv.DictReader(f):
+              category, _ = MenuCategory.objects.get_or_create(
+                name = row["category_name"].strip()
+              )    
+
+              MenuItem.objects.update_or_craete(
+                name=row["name"].strip(),
+                categor=category,
+                defaults={
+                    "description": row["description"].strip(),
+                    "price": row["price"],
+                },
+              )
+        self.stdout.write(self.style.SUCCESS("Menu item imported successfully"))      
