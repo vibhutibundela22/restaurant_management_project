@@ -1,0 +1,16 @@
+from rest_framework import serializers
+from .models import Restaurant
+
+class RestaurantSeriaalizer(serializers.ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = [
+            "id",
+            "name",
+            "address",
+            "phone_number",
+            "email",
+            "is_active",
+            "created_at",
+            'updated_at",     
+        ]
