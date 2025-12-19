@@ -1,0 +1,28 @@
+from djnago.db import models
+
+class Order(models.Model):
+    creatd_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order #{self.id}"
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    special_instructions = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )            
+
+    def __str__(self):
+        return f"{sefl.menu_item} x {self.quantty}"
+           
