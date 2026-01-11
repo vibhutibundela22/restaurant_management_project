@@ -1,0 +1,16 @@
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+from datetime import timedelta
+from home.models import Reservation
+
+class Commnand(BaseCommand):
+    help = "Delete unconfirmed reservations older than given hours"
+
+    def add_arguments(self, parser):
+        parser.add_argument('--hours', type=int, default=24)
+
+    def handle(self, *args, **options):
+        cutoff = timezone.now() - timedelta(hours=options['hours'])
+        qs = Reservation.objects.filter(status__in=['pending', 'unconfirmed'], created_at__lt=cutoff)
+        count = qs.count()
+        qs.delete()    
